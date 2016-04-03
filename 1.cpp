@@ -62,7 +62,7 @@ int main()
 	return 0;
 }
 
-/*
+/* Реализация действий с матрицами. 
 #include "stdafx.h"
 #include <iostream>
 using namespace std;
@@ -98,8 +98,8 @@ class matr {
 		cout << endl << endl;
 	}
 
-		/*
-		int proizv (int **aArr , int **bArr) {
+		
+		int proizv (int **aArr , int **bArr) { // Произведение матриц
 		int i,j;
 		int **cArr = new int *[i];
 		for (i = 0; i < m; i++)
@@ -114,7 +114,7 @@ class matr {
 		}
 		return **cArr;
 		}
-		int summ (int **aArr , int **bArr){
+		int summ (int **aArr , int **bArr){ // Сумма матриц
 		int i,j;
 		int **cArr = new int *[i];
 		for (i = 0; i < m; i++)
@@ -126,7 +126,7 @@ class matr {
 		return **cArr;
 		}
 		
-		int& operator ()(size_t i, size_t j)
+		int& operator ()(size_t i, size_t j) // Перегрузка оператора обращения по индексам
 		{
 			return matrica[i][j];
 		}
@@ -136,7 +136,7 @@ int main()
 {
 
 	matr ArrayInt(2,2);    //создаем объект класса и записываем в него данные
-	ArrayInt(0,0) = 1; //перегруженный []
+	ArrayInt(0,0) = 1; //перегруженный ()
 	ArrayInt(0,1) = 2;
 	ArrayInt(1,0) = 3;
 	ArrayInt(1,1) = 4;
