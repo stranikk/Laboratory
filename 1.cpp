@@ -62,7 +62,7 @@ int main()
 	return 0;
 }
 
-
+/*
 #include "stdafx.h"
 #include <iostream>
 using namespace std;
@@ -125,7 +125,7 @@ class matr {
 		}
 		return **cArr;
 		}
-		*/
+		
 		int& operator ()(size_t i, size_t j)
 		{
 			return matrica[i][j];
@@ -146,3 +146,4 @@ int main()
 	system("pause");
 	return 0;
 }
+*/
