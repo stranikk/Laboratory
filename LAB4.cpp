@@ -7,12 +7,13 @@ using namespace std;
 class compx
 {
 private:
+	// это не все комплексные, но неважно
 	int di, mn; // di - целая , mn - мнимая
 public:
-	int get_di() {
+	int get_di() { // const method
 		return di;
 	}
-	int get_mn() {
+	int get_mn() { // const method
 		return mn;
 	}
 	compx() {};
@@ -24,29 +25,33 @@ public:
 		di = d;
 		mn = m;
 	}
-	compx(compx &i) { // конструктор copy
+	// copy ctor может быть так сгенерирован и компилятором. Зачем писать больше?
+	compx(compx &i) { // конструктор copy // const reference
 		di = i.di;
 		mn = i.mn;
 	}
 	~compx() {}
 
+	// сгенерирован компилятором
 	compx & operator=  (compx &i) { // перегрузка присваивания
 		di = i.di;
 		mn = i.mn;
 		return (*this);
 	}
-	compx compx :: operator * (compx &i)// перегрузка произведения 
+
+	// алгоритмическая ошибка
+	compx compx :: operator * (compx &i)// перегрузка произведения  // const method, const param
 	{
 		compx tm;
 		tm.di = di*i.di;
 		tm.mn = di*i.mn;
 		return tm;
 	}
-	compx compx :: operator + (compx &i) // перегрузка сложения
+	compx compx :: operator + (compx &i) // перегрузка сложения // const method, const param
 	{
 		compx tm;
 		tm.di = di + i.di;
-		tm.mn = di + i.mn;
+		tm.mn = di + i.mn; // тут тоже логическая ошибка
 		return tm;
 	}
 };
@@ -80,7 +85,7 @@ public:
 		for (int i = 0; i < M; i++)
 		{
 			for (int j = 0; j < N; j++)
-				cout << A[i][j].get_di() << ", " << A[i][j].get_mn() << " | ";
+				cout << A[i][j].get_di() << ", " << A[i][j].get_mn() << " | "; // почему бы не перегрузить вывод для compx?
 			cout << endl;
 		}
 		cout << endl;
@@ -89,7 +94,7 @@ public:
 
 	~matrix()
 	{
-
+		// здесь надо что-то делать, иначе утечка памяти
 	}
 
 };
@@ -97,6 +102,7 @@ public:
 matrix operator+(matrix& M1, matrix& M2)//перегрузка сложения матриц
 {
 	matrix L(M1.M, M1.N);
+	// что делать, если размеры матриц-операндов разные?
 	for (int i = 0; i < M1.M; i++)
 	{
 		for (int j = 0; j < M1.N; j++)
@@ -107,10 +113,10 @@ matrix operator+(matrix& M1, matrix& M2)//перегрузка сложения 
 	return L;
 }
 
-matrix operator*(matrix& M1, matrix& M2)//перегрузка перемножения матриц
+matrix operator*(matrix& M1, matrix& M2)//перегрузка перемножения матриц // const reference as param type
 {
 	if (M1.N != M2.M)
-		throw "dont true size";
+		throw "dont true size"; // лучше выбрасывать объекты типа исключения (специальный класс)
 	matrix Q(M1.M, M1.N);
 
 	for (int i = 0; i < M1.M; i++)
@@ -189,7 +195,7 @@ int main()
 		O = A * X;
 		O.print();
 	}
-	catch (char*& z)
+	catch (char*& z) // лучше весь код main обернуть в try-catch
 	{
 		cout << "iskl for * " << z << endl;
 	}
