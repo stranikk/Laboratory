@@ -70,9 +70,48 @@ public:
 		return A[i][j];
 	}
 	
-	friend matrix operator+(matrix& s1, matrix& s2);
-	friend matrix operator*(matrix& s1, matrix& s2);
-	friend matrix operator~(matrix& s1);
+	matrix operator+(matrix& M1, matrix& M2)//перегрузка сложения матриц
+	{
+		matrix L(M1.M, M1.N);
+		for (int i = 0; i < M1.M; i++)
+		{
+			for (int j = 0; j < M1.N; j++)
+			{
+				L(i, j) = M2(i, j) + M1(i, j);
+			}
+		}
+		return L;
+	}
+	matrix operator*(matrix& M1, matrix& M2)//перегрузка перемножения матриц
+	{
+		if (M1.N != M2.M)
+			throw "dont true size";
+		matrix Q(M1.M, M1.N);
+
+		for (int i = 0; i < M1.M; i++)
+		{
+			for (int j = 0; j < M1.N; j++)
+			{
+				for (int t = 0; t < M1.N; t++)
+				{
+					Q(i, j) = Q(i, j) + (M1(i, t) * M2(t, j));
+				}
+			}
+		}
+		return Q;
+	}
+	matrix operator~(matrix& M1)//перегрузка транспонирования матрицы
+	{
+		matrix L(M1.N, M1.M);
+		for (int i = 0; i < M1.M; i++)
+		{
+			for (int j = 0; j < M1.N; j++)
+			{
+				L(j, i) = M1(i, j);
+			}
+		}
+		return L;
+	}
 
 	void print()
 	{
@@ -92,51 +131,6 @@ public:
 	}
 
 };
-
-	matrix operator+(matrix& M1, matrix& M2)//перегрузка сложения матриц
-	{
-		matrix L(M1.M, M1.N);
-		for (int i = 0; i < M1.M; i++)
-		{
-			for (int j = 0; j < M1.N; j++)
-			{
-				L(i, j) = M2(i, j) + M1(i, j);
-			}
-		}
-		return L;
-	}
-
-	matrix operator*(matrix& M1, matrix& M2)//перегрузка перемножения матриц
-	{
-		if (M1.N != M2.M)
-			throw "dont true size";
-		matrix Q(M1.M, M1.N);
-
-		for (int i = 0; i < M1.M; i++)
-		{
-			for (int j = 0; j < M1.N; j++)
-			{
-				for (int t = 0; t < M1.N; t++)
-				{
-					Q(i, j) = Q(i, j) + (M1(i, t) * M2(t, j));
-				}
-			}
-		}
-		return Q;
-	}
-
-	matrix operator~(matrix& M1)//перегрузка транспонирования матрицы
-	{
-		matrix L(M1.N, M1.M);
-		for (int i = 0; i < M1.M; i++)
-		{
-			for (int j = 0; j < M1.N; j++)
-			{
-				L(j, i) = M1(i, j);
-			}
-		}
-		return L;
-	}
 
 int main()
 {
