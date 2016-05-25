@@ -23,8 +23,7 @@
 using namespace std;
 
 class Worker; // // Класс сотрудники 
-class Door;
-class Zone;
+class Division;
 
 class Worker { // Класс сотрудники 
 	vector <Worker> workers;
@@ -34,21 +33,21 @@ class Worker { // Класс сотрудники
 public:
 	Worker()
 	{
-		EmplNumber = 0;
-		Category = 0;
+		name;
+		history;
 	}
 
 	void addemp() //Добавление нового сотрудника
 	{
-		Worker E; 
-		string n; 
+		Worker E;
+		string n;
 		cout << "Enter worker name:";
 		cin >> n;
 		E.name = n;
 		E.history = n;
 		workers.push_back(E);
-		}
 	}
+
 
 	void listemp() //Вывод списка сотрудникова
 	{
@@ -61,218 +60,100 @@ public:
 
 	void delemp() //Увольнение сотрудника
 	{
-		Worker E; int n;
-		cout << "Enter employee number:";
+		Worker E; 
+		string n;
+		cout << "Enter worker name:";
 		cin >> n;
 		for (int i = 0; i < workers.size(); i++)
 		{
-			if (workers[i].EmplNumber == n)
+			if (workers[i].name == n)
 			{
 				workers.erase(workers.begin() + i);
 			}
 		}
 	}
-
-	void chgcat() //Изменение категории доступа отдельного сотрудника
-	{
-		Worker E; int n;
-		cout << "Enter employee number:";
-		cin >> n;
+	/* string getworkers(string n) { // нужен try - catch
 		for (int i = 0; i < workers.size(); i++)
 		{
-			if (workers[i].EmplNumber == n)
-			{
-			cout << "Enter new employee category:";
-			cin >> n;
-			workers[i].Category = n;
+			if (workers[i].name == n) {
+				return workers[i].name;
 			}
 		}
 	}
-
-	int getempcat(int n) {
-		for (int i = 0; i < workers.size(); i++)
-		{
-			if (empls[i].EmplNumber == n)
-			{
-				return workers[i].Category;
-			}
-
-		}
-	}
+	*/
 };
 
-class Door {
+
+class Division {
+	friend Worker;
+	vector <Division> divisions;
+	//vector <Division> workers;
+	string name_division;
+	//string name_division_worker;
 public:
-	int DoorNumber;
-	int DoorCategory;
-	int DoorZone;
-
-	Door() 
+	Division()
 	{
-		DoorNumber = 0;
-		DoorCategory = 0;
-		DoorZone = 0;
-	}
-};
-
-class Zone {
-	friend Employee;
-	vector <Door> doors;
-	vector <Zone> zones;
-	int ZoneNumber;
-	int ZoneCategory;
-public:
-	Zone() 
-	{
-		ZoneCategory = 0;
-		ZoneNumber = 0;
+		name_division;
 	}
 
-	void addzone()
+	void add_division()
 	{
-		Zone Z; int n; int count = 0;
-		cout << "Enter zone number:";
+		Division D; 
+		string n;
+		cout << "Enter name of division:";
 		cin >> n;
-		for (int i = 0; i < zones.size(); i++)
-		{
-			if (zones[i].ZoneNumber == n) 
-			{
-				cout << "Zone with this ID number already exists!" << endl;
-				count = 1;
-			}
-		}
-		if (count == 0)
-		{
-			Z.ZoneNumber = n;
-			cout << "Enter zone category:";
-			cin >> n;
-			Z.ZoneCategory = n;
-			zones.push_back(Z);
-		}
-		count = 0;	
+		D.name_division = n;
+		divisions.push_back(D);
+		
 	}
 
-	void delzone()
+	void del_division()
 	{
-		Zone Z; int n;
-		cout << "Enter zone number:";
+		Division D; 
+		string n;
+		cout << "Enter name of division:";
 		cin >> n;
-		for (int i = 0; i < zones.size(); i++)
+		for (int i = 0; i < divisions.size(); i++)
 		{
-			if (zones[i].ZoneNumber == n)
+			if (divisions[i].name_division == n)
 			{
-				zones.erase(zones.begin() + i);
+				divisions.erase(divisions.begin() + i);
 			}
 		}
 	}
 
-	void deldoor()
+	void list_division()
 	{
-		Door D; int n;
-		cout << "Enter zone number:";
+		cout << "Divisions: \n";
+		for (int i = 0; i < divisions.size(); i++)
+		{
+			cout << divisions[i].name_division << " " << endl;
+		}
+	}
+	/*
+	void add_worker_div() {
+		string m,n,k;
+		cout << "Enter name in to division:";
 		cin >> n;
-		for (int i = 0; i < doors.size(); i++)
-		{
-			if (doors[i].DoorNumber == n)
-			{
-				doors.erase(doors.begin() + i);
+		cout << "Enter name division:";
+		cin >> k;
+		for (int i = 0; i < divisions.size(); i++) {
+			if (divisions[i].name_division == k) {
+				workers[i].name_division_worker = ;
 			}
 		}
 	}
-
-	int getzonecat(int n)
-	{
-		for (int i = 0; i < zones.size(); i++)
-		{
-			if (zones[i].ZoneNumber == n)
-			{
-				return zones[i].ZoneCategory;
-			}
-		}
-	}
-
-	int getdoorcat(int n)
-	{
-		for (int i = 0; i < doors.size(); i++)
-		{
-			if (doors[i].DoorNumber == n)
-			{
-				return doors[i].DoorCategory;
-			}
-		}
-	}
-
-	void adddoor()
-	{
-
-		Door D; int n; int count = 0;
-		cout << "Enter door number:";
-		cin >> n;
-		for (int i = 0; i < doors.size(); i++)
-		{
-			if (doors[i].DoorNumber == n)
-			{
-				cout << "Door with this ID number already exists!" << endl;
-				count = 1;
-			}
-		}
-		if (count == 0)
-		{
-			D.DoorNumber = n;
-			cout << "Enter zone number for door:";
-			cin >> n;
-			for (int i = 0; i < zones.size(); i++)
-			{
-				if (zones[i].ZoneNumber == n)
-				{
-					D.DoorZone = n;
-					D.DoorCategory = getzonecat(n);
-					doors.push_back(D);
-				}
-
-			}
-			count = 0;
-		}
-	}
-
-	void listzone()
-	{
-		cout << "Zones: \n";
-		cout << "Zone - Category \n";
-		for (int i = 0; i < zones.size(); i++)
-		{
-			cout << zones[i].ZoneNumber << " " << zones[i].ZoneCategory << endl;
-		}
-	}
-
-	void listdoor()
-	{
-		int n;
-		cout << "Enter zone number:";
-		cin >> n;
-		for (int i = 0; i < zones.size(); i++)
-		{
-			if (zones[i].ZoneNumber == n)
-			{
-				for (int i = 0; i < doors.size(); i++)
-				{
-					if (doors[i].DoorZone = zones[i].ZoneNumber)
-					{
-						cout << doors[i].DoorNumber << ", ";
-					}
-				}
-			}
-		}
-	}
+	*/
 };
 
 
 int main()
 {
-	Employee empl;
-	Zone zone;
-	int n; string command;
-	while (command != "end")
+	Worker empl;
+	Division division;
+	int n; 
+	string command;
+	while (command != "exit")
 	{
 		cin >> command;
 
@@ -281,16 +162,10 @@ int main()
 			cout << "addemp - add new employee" << endl;
 			cout << "listemp - list of employers" << endl;
 			cout << "delemp - delete employee" << endl;
-			cout << "chgcat - change access category of employee" << endl;
-			cout << "---ZONES AND DOORS---" << endl;
-			cout << "addzone - add new zone" << endl;
-			cout << "adddoor - add new door to zone" << endl;
-			cout << "listzone - list of zones" << endl;
-			cout << "listdoor - list of doors of zone" << endl;
-			cout << "delzone - delete zone" << endl;
-			cout << "deldoor - delete door" << endl;
-			cout << "---OTHER---" << endl;
-			cout << "trydoor - " << endl;
+			cout << "---DIVISION---" << endl;
+			cout << "add_division - add new division" << endl;
+			cout << "list_division - list of divisions" << endl;
+			cout << "del_division - delete division" << endl;
 		}
 		//------// Команды с сотрудниками
 		if (command == "addemp") //Добавление нового сотрудника
@@ -302,45 +177,15 @@ int main()
 		if (command == "delemp") //Увольнение сотрудника
 			empl.delemp();
 
-		if (command == "chgcat") //Изменение категории доступа отдельного сотрудника
-			empl.chgcat();
 		//------// Команды с зонами и дверями
-		if (command == "addzone")  //Добавление новой зоны
-			zone.addzone();
+		if (command == "add_division")  //Добавление новой зоны
+			division.add_division();
 
-		if (command == "adddoor") //Добавление новой двери
-			zone.adddoor();
+		if (command == "list_division") // Вывод подразделений
+			division.list_division();
 
-		if (command == "listzone") //Вывод списка зон
-			zone.listzone();
-
-		if (command == "listdoor") //Вывод списка дверей отдельной зоны
-			zone.listdoor();
-
-		if (command == "delzone") //Удаление зоны
-			zone.delzone();
-
-		if (command == "deldoor") //Удаление двери
-			zone.deldoor();
-		//------// Общие команды
-		if (command == "trydoor") //Попытка доступа человека к двери
-		{
-			int g;
-			cout << "Enter employee number:" << endl;
-			cin >> n;
-			cout << "Enter door number:" << endl;
-			cin >> g;
-			if (zone.getdoorcat(g) <= empl.getempcat(n)) 
-			{
-				cout << "SUCCESS" << endl;
-			}
-			else if (zone.getdoorcat(g) > empl.getempcat(n))
-			{
-				cout << "ACCESS DENIED" << endl;
-			}
-
-		}
-
+		if (command == "del_division") //Удаление подразделения
+			division.del_division();
 	}
 	return 0;
 }
