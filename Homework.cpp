@@ -1,24 +1,19 @@
 /*
 3. Сотрудники, подразделения -- отдел кадров
-
 Подразделения в предприятии имеют иерархическую структуру.
-
 Процессы:
-
 найм, увольнение сотрудника
 создание, переформирование, расформирование, перемещение, объединение подразделений
 поиск сотрудника, определение структуры его подчиненности
 переход сотрудников между подразделениями
 работа сотрудника на несколько ставок в различных подразделениях
 Необходимо реализовать функции сохранения и восстановления данных.
-
 1 1
 1 0 1 0 0
-0 0 
+0 0
 0
 1
 0 0
-
 По каждому сотруднику должна вестись история его перемещений внутри компании в рамках сессии работы программы.
 */
 #include <stdlib.h>
@@ -39,9 +34,9 @@ class Worker { // Класс сотрудники
 public:
 	Worker() : name("")
 	{
-		
+
 	}
-	
+
 	Worker(string n) : name(n)
 	{
 		history.push_back("Was created as \"" + name + "\"");
@@ -50,49 +45,38 @@ public:
 	string get_name() {
 		return name;
 	}
-	
+
 	string get_history(int i) {
 		return history[i];
 	}
-	
+
 	int get_history_size() {
 		return history.size();
 	}
-	
-	/* string getworkers(string n) { // нужен try - catch
-		for (int i = 0; i < workers.size(); i++)
-		{
-			if (workers[i].name == n) {
-				return workers[i].name;
-			}
-		}
-	}
-	*/
+
 };
 
 
 class Division {
 	string name_div;
 	vector <Worker*> workers;
-	//vector <Division> workers;
-	//string name_division_worker;
 public:
 	Division()
 	{
 	}
-	
+
 	Division(string n) : name_div(n)
-	{	
+	{
 	}
-	
+
 	string get_div() {
 		return name_div;
 	}
-	
+
 	string set_div(string n) {
 		name_div = n;
 	}
-	
+
 	void add_worker(Worker* w) {
 		workers.push_back(w);
 	}
@@ -104,7 +88,7 @@ public:
 	void del_worker(int i) {
 		workers.erase(workers.begin() + i);
 	}
-	
+
 	int get_div_size() {
 		return workers.size();
 	}
@@ -114,17 +98,17 @@ public:
 class Shell {
 	vector <Worker> workers;
 	vector <Division> divis;
-	
-	public:
-	shell() {	
+
+public:
+	Shell() {
 	}
-	shell(const Shell& o) {
+	Shell(const Shell& o) {
 		// TO-DO: Construcor 
 	}
-	
+
 	void addemp() //Добавление нового сотрудника
 	{
-		
+
 		string n;
 		cout << "Enter worker name:";
 		cin >> n;
@@ -163,23 +147,23 @@ class Shell {
 					divis[i].del_worker(j);
 					j--;
 				}
-				
+
 			}
 		}
 	}
-	
+
 	void add_division()
 	{
 		string n;
 		cout << "Enter name of division:";
 		cin >> n;
 		divis.push_back(Division(n));
-		
+
 	}
 
 	void del_division()
 	{
-		Division D; 
+		Division D;
 		string n;
 		cout << "Enter name of division:";
 		cin >> n;
@@ -201,53 +185,76 @@ class Shell {
 			cout << divis[i].get_div() << " " << endl;
 		}
 	}
-	
-	void add_worker_div() 
+
+	void add_worker_div()
 	{
 		string n;
 		int a = -1;
 		cout << "Enter worker name:";
 		cin >> n;
-		for(int i=0; i<workers.size(); i++) 
+		for (int i = 0; i<workers.size(); i++)
 		{
 			if (workers[i].get_name() == n)
 			{
 				a = i;
 			}
 		}
-		if(a==-1)
+		if (a == -1)
 		{
 			cout << "Worker not found: 404" << endl;
 			return;
 		}
-			
+
 		int b = -1;
 		cout << "Enter division name:";
 		cin >> n;
-		for(int i=0; i<divis.size(); i++) 
+		for (int i = 0; i<divis.size(); i++)
 		{
 			if (divis[i].get_div() == n)
 			{
 				b = i;
 			}
 		}
-		if(b==-1)
+		if (b == -1)
 		{
 			cout << "Division not found: 404" << endl;
 			return;
 		}
-		
+
 		divis[b].add_worker(&workers[a]);
+	}
+	void search_worker_div() {
+		string n;
+		int a = -1;
+		cout << "Enter worker name:";
+		cin >> n;
+		for (int i = 0; i<workers.size(); i++)
+		{
+			if (workers[i].get_name() == n)
+			{
+				a = i;
+				cout << "Worker found in the company: " <<n<< endl;
+			}
+		}
+		if (a == -1)
+		{
+			cout << "Worker not found" << endl;
+			return;
+		}
+		for (int i = 0; i < divis.size(); i++) {
+		
+			if (divis[i].get_worker[a] == n) {
+				cout << "Worker: " << n << "found in the division: " << divis[i].get_div << endl;
+			}
+		}
 	}
 };
 
 
 int main()
 {
-	//Worker empl;
-	//Division division;
 	Shell shell;
-	int n; 
+	int n;
 	string command;
 	while (command != "exit")
 	{
@@ -263,7 +270,8 @@ int main()
 			cout << "add_division - add new division" << endl;
 			cout << "list_division - list of divisions" << endl;
 			cout << "del_division - delete division" << endl;
-			cout << "add_div_emp - add employee to division" << endl; 
+			cout << "add_div_emp - add employee to division" << endl;
+			cout << "search_emp_div - search employee in divisions" << endl;
 		}
 		//------// Команды с сотрудниками
 		if (command == "addemp") //Добавление нового сотрудника
@@ -284,9 +292,11 @@ int main()
 
 		if (command == "del_division") //Удаление подразделения
 			shell.del_division();
-			
-		if (command == "add_div_emp") //Удаление подразделения
+
+		if (command == "add_div_emp") //добавление сотрудника в подразделение 
 			shell.add_worker_div();
+		if (command == "search_emp_div") // поиск сотрудника
+			shell.search_worker_div();
 	}
 	return 0;
 }
