@@ -10,35 +10,24 @@ class Directory;
 
 class File { // Класс файл
 	string name;
-	vector <string> history;
-
 public:
-	File() : name("")
-	{
+	File() : name("") {
 
 	}
 
 	File(string n) : name(n)
 	{
-		history.push_back("Was created as \"" + name + "\"");
 	}
 
 	string get_name() {
 		return name;
 	}
 
-	string get_history(int i) {
-		return history[i];
-	}
-
-	int get_history_size() {
-		return history.size();
-	}
 	~File();
 };
 
 
-class Directory { //
+class Directory { // директория 
 	string name_dir;
 	vector <File*> Files;
 public:
@@ -85,7 +74,7 @@ public:
 	Shell() {
 	}
 	Shell(const Shell& o) {
-		// TO-DO: Construcor
+
 	}
 
 	void create_file() //Добавление нового сотрудника
@@ -372,7 +361,7 @@ int main()
 		if (command == "del_dir") //Удаление папки
 			shell.del_Directory();
 
-		if (command == "add_dir_file") //добавление файла в папку 
+		if (command == "add_dir_file") //добавление файла в папку
 			shell.add_File_dir();
 
 		if (command == "list_dir_file") // вывод списка файлов из одной папки (содержание папки)
