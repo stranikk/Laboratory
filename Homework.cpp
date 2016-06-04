@@ -9,8 +9,8 @@
 работа сотрудника на несколько ставок в различных подразделениях
 Необходимо реализовать функции сохранения и восстановления данных.
 1 1
-1 0 1 0 0
-0 0
+1 1 1 0 0
+1 1
 0
 1
 0 0
@@ -73,7 +73,7 @@ public:
 		return name_div;
 	}
 
-	string set_div(string n) {
+	void set_div(string n) {
 		name_div = n;
 	}
 
@@ -242,11 +242,55 @@ public:
 			return;
 		}
 		for (int i = 0; i < divis.size(); i++) {
-		
-			if (divis[i].get_worker[a] == n) {
-				cout << "Worker: " << n << "found in the division: " << divis[i].get_div << endl;
+
+			for (int j = 0; j < divis[i].get_div_size(); j++)
+			{
+				if (divis[i].get_worker(j)->get_name() == n) { 
+					cout << "Worker: " << n << "found in the division: " << divis[i].get_div() << endl; 
+				}
 			}
 		}
+	}
+	void rename_div() {
+		string n,r;
+		int b = -1;
+		cout << "Enter to rename division:";
+		cin >> n;
+		for (int i = 0; i<divis.size(); i++)
+		{
+			if (divis[i].get_div() == n)
+			{
+				b = i;
+				cout << "Enter new name division: ";
+				cin >> r;
+				divis[i].set_div(r);
+			}
+		}
+		if (b == -1)
+		{
+			cout << "Division not found: 404" << endl;
+			return;
+		}
+
+	}
+	void move_worker_div() {
+		string n;
+		int a = -1;
+		cout << "Enter worker name to move:";
+		cin >> n;
+		for (int i = 0; i<workers.size(); i++)
+		{
+			if (workers[i].get_name() == n)
+			{
+				a = i;
+			}
+		}
+		if (a == -1)
+		{
+			cout << "Worker not found: 404" << endl;
+			return;
+		}
+
 	}
 };
 
@@ -272,6 +316,7 @@ int main()
 			cout << "del_division - delete division" << endl;
 			cout << "add_div_emp - add employee to division" << endl;
 			cout << "search_emp_div - search employee in divisions" << endl;
+			cout << "rename_div - reform division" << endl;
 		}
 		//------// Команды с сотрудниками
 		if (command == "addemp") //Добавление нового сотрудника
@@ -295,9 +340,12 @@ int main()
 
 		if (command == "add_div_emp") //добавление сотрудника в подразделение 
 			shell.add_worker_div();
+
 		if (command == "search_emp_div") // поиск сотрудника
 			shell.search_worker_div();
+
+		if (command == "rename_div") // переформирование подразделения
+			shell.rename_div();
 	}
 	return 0;
 }
-
