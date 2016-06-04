@@ -1,136 +1,399 @@
-#include <iostream>
-#include <vector>
-#include <memory>
+#include <stdlib.h>
 #include <string>
+#include <iostream>
+#include <memory>
+#include <vector>
 using namespace std;
-class file{
-    private :
-    string text;
-    string name;
+
+class File; // Класс файл
+class Directory;
+
+class File { // Класс файл
+	string name;
+	vector <string> history;
+
 public:
-    file(string file_text ,string file_name){
-        text=file_text;
-        name=file_name;
-    }
-    string get_text(){
-        return text;
-    }
-    string get_name(){
-        return name;
-    }
-};
-class folder{
-    private:
-    string name_folder;
-    vector<string> fold;
-public:
-    folder(vector<string> papka, string namefold){
-        fold=papka;
-        name_folder=namefold;
-    }
-    string get_name_folder(){
-        return name_folder;
-    }
-    void set_fold_cont(vector<string> papka){
-        fold=papka;
-    }
-    vector<string> get_fold_cont(){
-        	return fold;
-      	}
-    void print(){
-        cout << "Content of papka: " << endl;
-        for (int i=0; i<fold.size(); i++){
-            cout << fold[i] << endl;
-        }
-    }
-};
-class directory{
-private:
-    string name_direct;
-    vector<string> direct;
-public:
-    directory(vector<string> dir, string name_dir){
-        direct=dir;
-        name_direct=name_dir;
-    }
-    string get_name_direct(){
-        return name_direct;
-    }
-    vector<string> get_direct_cont(){
-        return direct;
-    }
-    void print(){
-        cout << "Content of directory: " << endl;
-        for (int i=0; i<direct.size(); i++){
-            cout << direct[i];
-        }
-    }
+	File() : name("")
+	{
+
+	}
+
+	File(string n) : name(n)
+	{
+		history.push_back("Was created as \"" + name + "\"");
+	}
+
+	string get_name() {
+		return name;
+	}
+
+	string get_history(int i) {
+		return history[i];
+	}
+
+	int get_history_size() {
+		return history.size();
+	}
+	~File();
 };
 
 
-int main() {
-    vector<string> pdirect;
-    vector<string> pname;
-    vector<string> ptext;
-    string name_d;
-    vector<string> pfold;
-    vector<string> pfoldname;
-    string name_f;
-    string nam,contet;
-    int n;
-    string command;
-    cout << "Enter size of commands: "<< endl;
-    cin >> n;
-    file failil(contet,nam);
-    folder papkil(pfold,name_f);
-    directory direx(pdirect,name_d);
-    for (int i=0; i<n; i++){
-    cout << "Enter command: "<< endl;
-    cin >> command;
-        if (command=="create_file"){
-            cout << "Enter name of file: "<< endl;
-            cin >> nam;
-            cout << "Enter content of file: "<< endl;
-            cin >> contet;
-            pname.push_back(nam);
-            ptext.push_back(contet);
-            cout << failil.get_name();
-        }
-        if (command=="create_folder"){
-            cout << "Enter name of folder: "<< endl;
-            cin >> name_f;
-            pfoldname.push_back(name_f);
-            cout << papkil.get_name_folder();
-        
-        }
-        if (command=="create_directory"){
-            cout << "Enter name of folder: "<< endl;
-            cin >> name_d;
-            cout << direx.get_name_direct();
-        }
-        if (command=="add_folder"){
-            string folder_name , folder_file;
-            cout << "Enter name of folder to addid: "<< endl;
-            cin >> folder_name;
-            cout << "Enter name of file to addid: "<< endl;
-            cin >> folder_file;
-            for(int i=0; i<pfoldname.size(); i++){
-                if (pfoldname[i]==folder_name){
-                    for(int j=0; j<pname.size(); j++){
-                        if(folder_file==pname[j]){
-                        pfold[i].push_back(folder_file);
-                        }
-                    }
-            }
-            for(int j=0; j<pname.size(); j++){
-                pfold.push_back(pname[j]);
-                papkil.set_fold_cont(pfold);
-            }
-            }
-        }
-        if (command=="list_folder"){
-            papkil.print();
-        }
-    }
-    return 0;
+class Directory { //
+	string name_dir;
+	vector <File*> Files;
+public:
+	Directory()
+	{
+	}
+
+	Directory(string n) : name_dir(n)
+	{
+	}
+
+	string get_dir() {
+		return name_dir;
+	}
+
+	void set_dir(string n) {
+		name_dir = n;
+	}
+
+	void add_File(File* w) {
+		Files.push_back(w);
+	}
+
+	File* get_File(int i) {
+		return Files[i];
+	}
+
+	void rm_file(int i) {
+		Files.erase(Files.begin() + i);
+	}
+
+	int get_dir_size() {
+		return Files.size();
+	}
+	~Directory();
+};
+
+
+class Shell {
+	vector <File> Files;
+	vector <Directory> direct;
+
+public:
+	Shell() {
+	}
+	Shell(const Shell& o) {
+		// TO-DO: Construcor
+	}
+
+	void create_file() //Добавление нового сотрудника
+	{
+
+		string n;
+		cout << "Enter File name:";
+		cin >> n;
+		Files.push_back(File(n));
+	}
+
+
+	void list_file() //Вывод списка сотрудникова
+	{
+		cout << "Files: \n";
+		for (int i = 0; i < Files.size(); i++)
+		{
+			cout << Files[i].get_name() << " " << endl;
+		}
+	}
+
+	void rm_file() //Увольнение сотрудника
+	{
+		string n;
+		cout << "Enter File name:";
+		cin >> n;
+		for (int i = 0; i < Files.size(); i++) // Удаление из вектора рабочих
+		{
+			if (Files[i].get_name() == n)
+			{
+				Files.erase(Files.begin() + i);
+				i--;
+			}
+		}
+		for (int i = 0; i < direct.size(); i++) // Удаление из списка подразделений
+		{
+			for (int j = 0; j < direct[i].get_dir_size(); j++)
+			{
+				if (direct[i].get_File(j)->get_name() == n)
+				{
+					direct[i].rm_file(j);
+					j--;
+				}
+
+			}
+		}
+	}
+
+	void add_Directory()
+	{
+		string n;
+		cout << "Enter name of Directory:";
+		cin >> n;
+		direct.push_back(Directory(n));
+
+	}
+
+	void del_Directory()
+	{
+		Directory D;
+		string n;
+		cout << "Enter name of Directory:";
+		cin >> n;
+		for (int i = 0; i < direct.size(); i++)
+		{
+			if (direct[i].get_dir() == n)
+			{
+				direct.erase(direct.begin() + i);
+				i--;
+			}
+		}
+	}
+
+	void list_Directory()
+	{
+		cout << "Directorys: \n";
+		for (int i = 0; i < direct.size(); i++)
+		{
+			cout << direct[i].get_dir() << " " << endl;
+		}
+	}
+
+	void add_File_dir()
+	{
+		string n;
+		int a = -1;
+		cout << "Enter File name:";
+		cin >> n;
+		for (int i = 0; i<Files.size(); i++)
+		{
+			if (Files[i].get_name() == n)
+			{
+				a = i;
+			}
+		}
+		if (a == -1)
+		{
+			cout << "File not found: 404" << endl;
+			return;
+		}
+
+		int b = -1;
+		cout << "Enter Directory name:";
+		cin >> n;
+		for (int i = 0; i<direct.size(); i++)
+		{
+			if (direct[i].get_dir() == n)
+			{
+				b = i;
+			}
+		}
+		if (b == -1)
+		{
+			cout << "Directory not found: 404" << endl;
+			return;
+		}
+
+		direct[b].add_File(&Files[a]);
+	}
+	void list_dir_File() {
+		string n;
+		int b = -1;
+		cout << "Enter Directory name:";
+		cin >> n;
+		for (int i = 0; i<direct.size(); i++)
+		{
+			if (direct[i].get_dir() == n)
+			{
+				b = i;
+			}
+		}
+		if (b == -1)
+		{
+			cout << "Directory not found: 404" << endl;
+			return;
+		}
+		cout << "Files in Directory: \n";
+		for (int i = 0; i < direct[b].get_dir_size(); i++)
+		{
+			cout << direct[b].get_File(i)->get_name() << " " << endl;
+		}
+
+	}
+	void search_File_dir() {
+		string n;
+		int a = -1;
+		cout << "Enter File name:";
+		cin >> n;
+		for (int i = 0; i<Files.size(); i++)
+		{
+			if (Files[i].get_name() == n)
+			{
+				a = i;
+				cout << "File found in a system: " <<n<< endl;
+			}
+		}
+		if (a == -1)
+		{
+			cout << "File not found" << endl;
+			return;
+		}
+		for (int i = 0; i < direct.size(); i++) {
+
+			for (int j = 0; j < direct[i].get_dir_size(); j++)
+			{
+				if (direct[i].get_File(j)->get_name() == n) {
+					cout << "File: " << n << " found in the Directory: " << direct[i].get_dir() << endl;
+				}
+			}
+		}
+	}
+	void rename_dir() {
+		string n,r;
+		int b = -1;
+		cout << "Enter to rename Directory:";
+		cin >> n;
+		for (int i = 0; i<direct.size(); i++)
+		{
+			if (direct[i].get_dir() == n)
+			{
+				b = i;
+				cout << "Enter new name Directory: ";
+				cin >> r;
+				direct[i].set_dir(r);
+			}
+		}
+		if (b == -1)
+		{
+			cout << "Directory not found: 404" << endl;
+			return;
+		}
+
+	}
+	void move_File_dir() {
+		string n,e;
+		int a = -1;
+		cout << "Enter File name to move:";
+		cin >> n;
+		for (int i = 0; i<Files.size(); i++)
+		{
+			if (Files[i].get_name() == n)
+			{
+				a = i;
+			}
+		}
+		if (a == -1)
+		{
+			cout << "File not found: 404" << endl;
+			return;
+		}
+		int b = -1;
+		cout << "Enter Directory to move in: ";
+		cin >> e;
+		for (int i = 0; i<direct.size(); i++)
+		{
+			if (direct[i].get_dir() == e)
+			{
+				b = i;
+			}
+		}
+		if (b == -1)
+		{
+			cout << "Directory not found: 404" << endl;
+			return;
+		}
+		int m = 0;
+		for (int i = 0; i < direct.size(); i++) {
+
+			for (int j = 0; j < direct[i].get_dir_size(); j++)
+			{
+				if (direct[i].get_File(j)->get_name() == n) {
+					m = i;
+				}
+			}
+		}
+		direct[b].add_File(&Files[a]);
+		direct[m].rm_file(a);
+	}
+};
+
+
+int main()
+{
+	Shell shell;
+	int n;
+	string command;
+	while (command != "exit")
+	{
+		cout << "> ";
+		cin >> command;
+
+		if (command == "help") {
+			cout << "---FILE---" << endl;
+			cout << "create_file - add new file" << endl;
+			cout << "list_file - list of files" << endl;
+			cout << "rm_file - delete file" << endl;
+			cout << "---Directory---" << endl;
+			cout << "add_dir - add new Directory" << endl;
+			cout << "list_dir - list of Directorys" << endl;
+			cout << "del_dir - delete Directory" << endl;
+			cout << "add_dir_file - add file to Directory" << endl;
+			cout << "list_dir_file - list file of Directory" << endl;
+			cout << "search_file_dir - search file in Directorys" << endl;
+			cout << "rename_dir - reform Directory" << endl;
+			cout << "move_file_dir - move file to new Directory" << endl;
+		}
+		//------// Команды с файлами
+		if (command == "create_file") //Добавление нового файла
+			shell.create_file();
+
+		if (command == "list_file") //Вывод списка файлов в системе
+			shell.list_file();
+
+		if (command == "rm_file") //Удаление файла
+			shell.rm_file();
+
+		//------// Команды с директориями
+		if (command == "add_dir")  //Добавление новой папки
+			shell.add_Directory();
+
+		if (command == "list_dir") // Вывод списка созданных папок
+			shell.list_Directory();
+
+		if (command == "del_dir") //Удаление папки
+			shell.del_Directory();
+
+		if (command == "add_dir_file") //добавление файла в папку 
+			shell.add_File_dir();
+
+		if (command == "list_dir_file") // вывод списка файлов из одной папки (содержание папки)
+			shell.list_dir_File();
+
+		if (command == "search_file_dir") // поиск файла по системе
+			shell.search_File_dir();
+
+		if (command == "rename_dir") // переименовывание уже созданной папки
+			shell.rename_dir();
+
+		if (command == "move_file_dir") // перемещение файла между папками
+			shell.move_File_dir();
+	}
+	return 0;
+}
+
+Directory::~Directory()
+{
+}
+
+File::~File()
+{
 }
