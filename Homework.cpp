@@ -53,7 +53,7 @@ public:
 	int get_history_size() {
 		return history.size();
 	}
-
+	~Worker();
 };
 
 
@@ -92,6 +92,7 @@ public:
 	int get_div_size() {
 		return workers.size();
 	}
+	~Division();
 };
 
 
@@ -406,5 +407,13 @@ int main()
 			shell.move_worker_div();
 	}
 	return 0;
+}
+
+Division::~Division()
+{
+}
+
+Worker::~Worker()
+{
 }
 
