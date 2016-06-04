@@ -11,7 +11,7 @@
 1 1
 1 1 1 0 0
 1 1
-0
+1
 1
 0 0
 По каждому сотруднику должна вестись история его перемещений внутри компании в рамках сессии работы программы.
@@ -223,6 +223,30 @@ public:
 
 		divis[b].add_worker(&workers[a]);
 	}
+	void list_div_worker() {
+		string n;
+		int b = -1;
+		cout << "Enter division name:";
+		cin >> n;
+		for (int i = 0; i<divis.size(); i++)
+		{
+			if (divis[i].get_div() == n)
+			{
+				b = i;
+			}
+		}
+		if (b == -1)
+		{
+			cout << "Division not found: 404" << endl;
+			return;
+		}
+		cout << "Workers in division: \n";
+		for (int i = 0; i < divis[b].get_div_size(); i++)
+		{
+			cout << divis[b].get_worker(i)->get_name() << " " << endl;
+		}
+
+	}
 	void search_worker_div() {
 		string n;
 		int a = -1;
@@ -246,7 +270,7 @@ public:
 			for (int j = 0; j < divis[i].get_div_size(); j++)
 			{
 				if (divis[i].get_worker(j)->get_name() == n) { 
-					cout << "Worker: " << n << "found in the division: " << divis[i].get_div() << endl; 
+					cout << "Worker: " << n << " found in the division: " << divis[i].get_div() << endl; 
 				}
 			}
 		}
@@ -274,7 +298,7 @@ public:
 
 	}
 	void move_worker_div() {
-		string n;
+		string n,e;
 		int a = -1;
 		cout << "Enter worker name to move:";
 		cin >> n;
@@ -290,7 +314,33 @@ public:
 			cout << "Worker not found: 404" << endl;
 			return;
 		}
+		int b = -1;
+		cout << "Enter division to move in: ";
+		cin >> e;
+		for (int i = 0; i<divis.size(); i++)
+		{
+			if (divis[i].get_div() == e)
+			{
+				b = i;
+			}
+		}
+		if (b == -1)
+		{
+			cout << "Division not found: 404" << endl;
+			return;
+		}
+		int m = 0;
+		for (int i = 0; i < divis.size(); i++) {
 
+			for (int j = 0; j < divis[i].get_div_size(); j++)
+			{
+				if (divis[i].get_worker(j)->get_name() == n) {
+					m = i;
+				}
+			}
+		}
+		divis[b].add_worker(&workers[a]);
+		divis[m].del_worker(a);
 	}
 };
 
@@ -311,12 +361,14 @@ int main()
 			cout << "listemp - list of employers" << endl;
 			cout << "delemp - delete employee" << endl;
 			cout << "---DIVISION---" << endl;
-			cout << "add_division - add new division" << endl;
-			cout << "list_division - list of divisions" << endl;
-			cout << "del_division - delete division" << endl;
+			cout << "add_div - add new division" << endl;
+			cout << "list_div - list of divisions" << endl;
+			cout << "del_div - delete division" << endl;
 			cout << "add_div_emp - add employee to division" << endl;
+			cout << "list_div_emp - list employees of division" << endl;
 			cout << "search_emp_div - search employee in divisions" << endl;
 			cout << "rename_div - reform division" << endl;
+			cout << "move_emp_div - move employee to new division" << endl;
 		}
 		//------// Команды с сотрудниками
 		if (command == "addemp") //Добавление нового сотрудника
@@ -329,23 +381,29 @@ int main()
 			shell.delemp();
 
 		//------// Команды с зонами и дверями
-		if (command == "add_division")  //Добавление новой зоны
+		if (command == "add_div")  //Добавление новой зоны
 			shell.add_division();
 
-		if (command == "list_division") // Вывод подразделений
+		if (command == "list_div") // Вывод подразделений
 			shell.list_division();
 
-		if (command == "del_division") //Удаление подразделения
+		if (command == "del_div") //Удаление подразделения
 			shell.del_division();
 
 		if (command == "add_div_emp") //добавление сотрудника в подразделение 
 			shell.add_worker_div();
+
+		if (command == "list_div_emp") // Вывод сотрудников из одного подразделения
+			shell.list_div_worker();
 
 		if (command == "search_emp_div") // поиск сотрудника
 			shell.search_worker_div();
 
 		if (command == "rename_div") // переформирование подразделения
 			shell.rename_div();
+
+		if (command == "move_emp_div") // перемещение сотрудника между подразделениями
+			shell.move_worker_div();
 	}
 	return 0;
 }
