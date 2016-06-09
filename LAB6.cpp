@@ -5,19 +5,6 @@
 
 using namespace std;
 
-//class rational {
-//private:
-//	int m;
-//	int n;
-//public:
-//	void print();
-//	rational(int m, int n);
-//	rational();
-//	const rational operator+(const rational& r);
-//	const rational operator*(const rational& r); //óìíîæåíèå íà ðàö äðîáü
-//	const rational operator*(int lambda); //óìíîæåíèå íà ÷èñëî
-//};
-
 template <class T, int m, int n>
 class matrix {
 private:
