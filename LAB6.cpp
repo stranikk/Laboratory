@@ -1,217 +1,204 @@
 #include <iostream>
-#include <cstdlib>
-#include <cmath>
+#include "ctime"
+#include <memory>
+#include <algorithm>
 
 using namespace std;
 
-class compx
-{
-private:
-	int di, mn; // di - целая , mn - мнимая
-public:
-	int get_di() {
-		return di;
-	}
-	int get_mn() {
-		return mn;
-	}
-	compx() {};
-	compx(int d) {
-		di = d;
-		mn = 0;
-	}
-	compx(int d, int m) {
-		di = d;
-		mn = m;
-	}
-	compx(compx &i) { // конструктор copy
-		di = i.di;
-		mn = i.mn;
-	}
-	~compx() {}
+//class rational {
+//private:
+//	int m;
+//	int n;
+//public:
+//	void print();
+//	rational(int m, int n);
+//	rational();
+//	const rational operator+(const rational& r);
+//	const rational operator*(const rational& r); //óìíîæåíèå íà ðàö äðîáü
+//	const rational operator*(int lambda); //óìíîæåíèå íà ÷èñëî
+//};
 
-	compx & operator=  (compx &i) { // перегрузка присваивания
-		di = i.di;
-		mn = i.mn;
-		return (*this);
-	}
-	compx & operator=  (const compx &i) { // перегрузка присваивания
-		di = i.di;
-		mn = i.mn;
-		return (*this);
-	}
-	compx operator * (compx &i)// перегрузка произведения 
-	{
-		compx tm;
-		tm.di = di*i.di;
-		tm.mn = di*i.mn;
-		return tm;
-	}
-	compx operator + (compx &i) // перегрузка сложения
-	{
-		compx tm;
-		tm.di = di + i.di;
-		tm.mn = di + i.mn;
-		return tm;
-	}
-	compx operator + (const compx &i) // перегрузка сложения
-	{
-		compx tm;
-		tm.di = di + i.di;
-		tm.mn = di + i.mn;
-		return tm;
-	}
-};
-template <typename T>
+template <class T, int m, int n>
 class matrix {
-	T** A;
-	int M;
-	int N;
+private:
+	T **mat;
 public:
-	matrix<T>(int m, int n) : A(NULL), M(m), N(n)
-	{
-		A = new T*[M]; //строки в массиве
-		for (int i = 0; i < M; i++)
+	matrix<T, m, n>();
+	matrix(matrix &matr) {
+		mat = new T*[m];
+		for (int i = 0; i < m; i++)
 		{
-			A[i] = new T[N]; //  столбцы
-			for (int j = 0; j < N; j++)
-				A[i][j] = T(0, 0);
-		}
-	}
-	T& operator () (int i, int j) // перегрузка оператора обращение к элементу ()
-	{
-		return A[i][j];
-	}
-
-	int m() { return M; };
-	int n() { return N; };
-
-
-	void print()
-	{
-		for (int i = 0; i < M; i++)
-		{
-			for (int j = 0; j < N; j++)
-				cout << A[i][j].get_di() << ", " << A[i][j].get_mn() << " | ";
-			cout << endl;
-		}
-		cout << endl;
-	}
-
-
-	~matrix<T>()
-	{
-
-	}
-
-};
-
-
-template <typename T> matrix<T> operator+(matrix<T>& M1, matrix<T>& M2)//перегрузка сложения матриц
-{
-	matrix<T> L(M1.m(), M1.n());
-	for (int i = 0; i < M1.m(); i++)
-	{
-		for (int j = 0; j < M1.n(); j++)
-		{
-			L(i, j) = M2(i, j) + M1(i, j);
-		}
-	}
-	return L;
-}
-template <typename T>  matrix<T> operator*(matrix<T>& M1, matrix<T>& M2)//перегрузка перемножения матриц
-{
-	if (M1.n() != M2.m())
-		throw "dont true size";
-	matrix<T> Q(M1.m(), M1.n());
-	for (int i = 0; i < M1.m(); i++)
-	{
-		for (int j = 0; j < M1.n(); j++)
-		{
-			for (int t = 0; t < M1.n(); t++)
-			{
-				Q(i, j) = Q(i, j) + (M1(i, t) * M2(t, j));
+			mat[i] = new T[n];
+			for (int j = 0; j < n; j++) {
+				set(i, j, matr.get(i, j));
 			}
 		}
+
 	}
-	return Q;
+	~matrix();
+
+
+	const void operator=(const matrix<T, m, n>& mat);
+
+	template <class U = T, int m2 = n, int n2>
+	matrix<T, m, n2> operator*(matrix<U, m2, n2>& mat);  //óìíîæåíèå ìàòðèö
+
+	T get(int m, int n);
+
+	template <class U = T, int m2 = m, int n2, int n3=n+n2>
+	
+	matrix<U, m2, n3> operator|(matrix<U, m2, n2>& mat);
+	
+	void set(int m_in, int n_in, T set);
+	void print(); //âûâîä ìàòðèöû
+	
+	
+	class iter {
+		matrix* p_mat;
+		int pos_m, pos_n;
+	public:
+		iter& operator++() {
+			if (pos_n == n - 1) {
+				pos_m++;
+				pos_n = 0;
+			}
+			else
+			{
+				pos_n++;
+			}
+			return *this;
+		}
+		bool operator!=(const iter& prev_it){
+			return !(pos_m == prev_it.pos_m && pos_n == prev_it.pos_n);
+		}
+		iter(matrix* p_mat, int pos_m, int pos_n) {
+			this->p_mat = p_mat;
+			this->pos_m = pos_m;
+			this->pos_n = pos_n;
+		}
+		T operator*() {
+			return p_mat->get(pos_m, pos_n);
+		}
+		T* operator->() {
+			return *p_mat->get(pos_m, pos_n);
+		}
+
+	};
+	iter begin() {
+		iter temp(this, 0, 0);
+		return temp;
+	}
+	iter end() {
+		iter temp(this, m, 0);
+		return temp;
+	}
+};
+template <class T, int m, int n>
+matrix<T, m, n>::matrix() {
+	mat = new T*[m];
+	for (int i = 0; i < m; i++)
+	{
+			mat[i] = new T[n];
+	}
 }
 
-template <typename T> matrix<T> operator~(matrix<T>& M1)//перегрузка транспонирования матрицы
-{
-	matrix<T> L(M1.n(), M1.m());
-	for (int i = 0; i < M1.m(); i++)
-	{
-		for (int j = 0; j < M1.n(); j++)
-		{
-			L(j, i) = M1(i, j);
+template <class T, int m, int n>
+T matrix<T, m, n>::get(int m, int n) {
+	return mat[m][n];
+}
+
+template <class T, int m, int n>
+const void matrix<T, m, n>::operator=(const matrix<T, m, n>& mat) {
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n; j++) {
+			set(i, j, mat.get(i, j));
 		}
 	}
-	return L;
 }
 
+template <class T, int m, int n>
+void matrix<T, m, n>::set(int m_in, int n_in, T set) {
+	mat[m_in][n_in] = set;
+}
+
+template <class T, int m, int n>
+template <class U = T, int m2 = n, int n2>
+matrix<T, m, n2> matrix<T, m, n>::operator*(matrix<U, m2, n2>& mat)
+{
+	matrix<T, m, n2> temp; // ñîçäàåì ïóñòóþ ìàòðèöó m1xn2
+	T tempvalue; //tempvalue äîëæåí èìåòü âîçìîæíîñòü = 0 ))))
+	{
+	for (int i = 0; i < m; i++) //m1
+		for (int j = 0; j < n2; j++) //n2
+		{
+			tempvalue = 0; 
+			for (int k = 0; k < n; k++) //n1
+			{
+				tempvalue = tempvalue + (get(i, k) * mat.get(k, j));
+			}
+			temp.set(i, j, tempvalue);
+		}
+	}
+	return temp;
+}
+
+template <class T, int m, int n> //class T äîëæåí áûòü ïåðåãðóæåí íà <<
+void matrix<T, m, n>::print() {
+	for (int i = 0; i < m; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			std::cout << get(i, j);
+			std::cout << " ";
+		}
+		std::cout << std::endl;
+	}
+}
+
+template <class T, int m, int n>
+template <class U = T, int m2 = m, int n2, int n3 = n + n2>
+matrix<U, m2, n3> matrix<T, m, n>::operator|(matrix<U, m2, n2>& mat) {
+	matrix<U, m2, n3> temp;
+	for (int i = 0; i < m2; i++) {
+		for (int j = 0; j < n; j++) {
+			temp.set(i, j, get(i, j));
+		}
+		for (int k = n; k < n + n2; k++) {
+			temp.set(i, k, mat.get(i, k - n));
+		}
+	}
+	return temp;
+}
+
+template <class T, int m, int n>
+matrix<T, m, n>::~matrix() {
+	for (int i = 0; i < m; i++)
+	{
+		delete mat[i];
+	}
+	delete mat;
+}
 
 int main()
 {
-	compx value1(1, 7);
-	compx value2(6, -2);
+	matrix<int, 2, 1> mmm;
+	mmm.set(0, 0, 1);
+	mmm.set(1, 0, 3);
+	matrix<int, 1, 2> nnn;
+	nnn.set(0, 0, 4);
+	nnn.set(0, 1, 3);
+	matrix<int, 2, 2> sss = mmm*nnn;
+	sss.print();
+	matrix<int, 2, 1> mmm1;
+	mmm1.set(0, 0, 11);
+	mmm1.set(1, 0, 31);
+	matrix<int, 2, 2> konk = mmm | mmm1;
+	konk.print();
 
-	matrix <compx> A(3, 2);        // До запятой целай часть числа , а потом мнимая
-	A(0, 0) = compx(2, 3);
-	A(0, 1) = compx(1, 1);
-	A(1, 0) = compx(0, 1);
-	A(1, 1) = compx(3, 4);
-	A(2, 0) = compx(0, 0);
-	A(2, 1) = compx(1, 3);
-
-	matrix <compx> B(2, 2);
-	B(0, 0) = compx(1, 5);
-	B(0, 1) = compx(3, 3);
-	B(1, 0) = compx(6, 1);
-	B(1, 1) = compx(1, 0);
-
-	matrix <compx> X(3, 2);
-	X(0, 0) = compx(2, 2);
-	X(0, 1) = compx(1, 3);
-	X(1, 0) = compx(7, 3);
-	X(1, 1) = compx(2, 1);
-	X(2, 0) = compx(0, 0);
-	X(2, 1) = compx(1, 1);
-
-	cout << "Matrica A: " << endl;
-	A.print();
-	cout << "Matrica B: " << endl;
-	B.print();
-	cout << "Matrica X: " << endl;
-	X.print();
-	matrix <compx> C(2, 2);
-	C = A + X;//сложение матриц
-	cout << "Matrica A+F: " << endl;
-	C.print();
-	matrix <compx> O(2, 2);
-	O = A * B;//перемножение матриц
-	cout << "Matrica A*B: " << endl;
-	O.print();
-	matrix <compx> E(2, 2);
-	E = ~A;//транспонирование матрицы
-	cout << "Transponir matr A: " << endl;
-	E.print();
-	try // исключение
-	{
-		O = A * X;
-		O.print();
+	auto it = konk.begin();
+	for (; it != konk.end(); ++it) {
+		cout << *it << endl;
 	}
-	catch (const char * z)
-	{
-		cout << "iskl for * " << z << endl;
-	}
-	cout << endl;
 
-	cout << " di " << value1.get_di() << " mn ";
-	cout << value1.get_mn() << endl;
-	cout << " di " << value2.get_di() << " mn ";
-	cout << value2.get_mn() << endl;
-
-	system("pause");
 	return 0;
 }
