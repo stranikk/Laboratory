@@ -2,7 +2,9 @@
 #include "ctime"
 #include <memory>
 #include <algorithm>
-
+#include "targetver.h"
+#include <stdio.h>
+#include <tchar.h>
 using namespace std;
 
 template <class T, int m, int n>
