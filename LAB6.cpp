@@ -30,26 +30,27 @@ public:
 	const void operator=(const matrix<T, m, n>& mat);
 
 	template <class U = T, int m2 = n, int n2>
-	matrix<T, m, n2> operator*(matrix<U, m2, n2>& mat);  //óìíîæåíèå ìàòðèö
+	matrix<T, m, n2> operator*(matrix<U, m2, n2>& mat);   // умножение матриц
 
-	T get(int m, int n);
+	T get(int m, int n); // получение матрицы 
 
-	template <class U = T, int m2 = m, int n2, int n3=n+n2>
-	
-	matrix<U, m2, n3> operator|(matrix<U, m2, n2>& mat);
-	
-	void set(int m_in, int n_in, T set);
-	void print(); //âûâîä ìàòðèöû
-	
-	
-	class iter {
-		matrix* p_mat;
-		int pos_m, pos_n;
+	template <class U = T, int m2 = m, int n2, int n3 = n + n2>
+
+	matrix<U, m2, n3> operator|(matrix<U, m2, n2>& mat); // конкатенация матриц
+
+	void set(int m_in, int n_in, T set); // установка значений матрицы
+	void print(); // метод печати матрицы 
+
+
+	class iterator // Forward-итератор доступа к элементам матрицы
+	{ 
+		matrix* pmat;
+		int position_M, position_N;
 	public:
-		iter& operator++() {
-			if (pos_n == n - 1) {
-				pos_m++;
-				pos_n = 0;
+		iterator& operator++() {
+			if (position_N == n - 1) {
+				position_M++;
+				position_N = 0;
 			}
 			else
 			{
@@ -57,41 +58,41 @@ public:
 			}
 			return *this;
 		}
-		bool operator!=(const iter& prev_it){
-			return !(pos_m == prev_it.pos_m && pos_n == prev_it.pos_n);
+		bool operator!=(const iterator& prev_it) {
+			return !(position_M == prev_it.position_M && position_N == prev_it.position_N);
 		}
-		iter(matrix* p_mat, int pos_m, int pos_n) {
-			this->p_mat = p_mat;
-			this->pos_m = pos_m;
-			this->pos_n = pos_n;
+		iterator(matrix* pmat, int position_M, int position_N) {
+			this->pmat = pmat;
+			this->position_M = position_M;
+			this->position_N = position_N;
 		}
 		T operator*() {
-			return p_mat->get(pos_m, pos_n);
+			return pmat->get(position_M, position_N);
 		}
 		T* operator->() {
-			return *p_mat->get(pos_m, pos_n);
+			return *pmat->get(position_M, position_N);
 		}
 
 	};
-	iter begin() {
-		iter temp(this, 0, 0);
+	iterator begin() {
+		iterator temp(this, 0, 0);
 		return temp;
 	}
-	iter end() {
-		iter temp(this, m, 0);
+	iterator end() {
+		iterator temp(this, m, 0);
 		return temp;
 	}
 };
 template <class T, int m, int n>
-matrix<T, m, n>::matrix() {
+matrix<T, m, n>::matrix() { // конструктор без параметров (инициализация матрицы) 
 	mat = new T*[m];
 	for (int i = 0; i < m; i++)
 	{
-			mat[i] = new T[n];
+		mat[i] = new T[n];
 	}
 }
 
-template <class T, int m, int n>
+template <class T, int m, int n> // получение элемента матрицы
 T matrix<T, m, n>::get(int m, int n) {
 	return mat[m][n];
 }
@@ -106,33 +107,33 @@ const void matrix<T, m, n>::operator=(const matrix<T, m, n>& mat) {
 }
 
 template <class T, int m, int n>
-void matrix<T, m, n>::set(int m_in, int n_in, T set) {
+void matrix<T, m, n>::set(int m_in, int n_in, T set) { // метод установки значений матрицы
 	mat[m_in][n_in] = set;
 }
 
 template <class T, int m, int n>
 template <class U = T, int m2 = n, int n2>
-matrix<T, m, n2> matrix<T, m, n>::operator*(matrix<U, m2, n2>& mat)
+matrix<T, m, n2> matrix<T, m, n>::operator*(matrix<U, m2, n2>& mat) // реализация перегрузки умножения матриц
 {
-	matrix<T, m, n2> temp; // ñîçäàåì ïóñòóþ ìàòðèöó m1xn2
-	T tempvalue; //tempvalue äîëæåí èìåòü âîçìîæíîñòü = 0 ))))
+	matrix<T, m, n2> temp; 
+	T tempvalue; 
 	{
-	for (int i = 0; i < m; i++) //m1
-		for (int j = 0; j < n2; j++) //n2
-		{
-			tempvalue = 0; 
-			for (int k = 0; k < n; k++) //n1
+		for (int i = 0; i < m; i++) //m1
+			for (int j = 0; j < n2; j++) //n2
 			{
-				tempvalue = tempvalue + (get(i, k) * mat.get(k, j));
+				tempvalue = 0;
+				for (int k = 0; k < n; k++) //n1
+				{
+					tempvalue = tempvalue + (get(i, k) * mat.get(k, j));
+				}
+				temp.set(i, j, tempvalue);
 			}
-			temp.set(i, j, tempvalue);
-		}
 	}
 	return temp;
 }
 
-template <class T, int m, int n> //class T äîëæåí áûòü ïåðåãðóæåí íà <<
-void matrix<T, m, n>::print() {
+template <class T, int m, int n> 
+void matrix<T, m, n>::print() { // реализация метода печати матрицы 
 	for (int i = 0; i < m; i++)
 	{
 		for (int j = 0; j < n; j++)
@@ -146,7 +147,7 @@ void matrix<T, m, n>::print() {
 
 template <class T, int m, int n>
 template <class U = T, int m2 = m, int n2, int n3 = n + n2>
-matrix<U, m2, n3> matrix<T, m, n>::operator|(matrix<U, m2, n2>& mat) {
+matrix<U, m2, n3> matrix<T, m, n>::operator|(matrix<U, m2, n2>& mat) { // конкатенация матриц (выполнение перегрузки) 
 	matrix<U, m2, n3> temp;
 	for (int i = 0; i < m2; i++) {
 		for (int j = 0; j < n; j++) {
@@ -160,7 +161,7 @@ matrix<U, m2, n3> matrix<T, m, n>::operator|(matrix<U, m2, n2>& mat) {
 }
 
 template <class T, int m, int n>
-matrix<T, m, n>::~matrix() {
+matrix<T, m, n>::~matrix() { // подчищение памяти в деструкторе класса 
 	for (int i = 0; i < m; i++)
 	{
 		delete mat[i];
@@ -170,20 +171,32 @@ matrix<T, m, n>::~matrix() {
 
 int main()
 {
-	matrix<int, 2, 1> mmm;
-	mmm.set(0, 0, 1);
-	mmm.set(1, 0, 3);
-	matrix<int, 1, 2> nnn;
-	nnn.set(0, 0, 4);
-	nnn.set(0, 1, 3);
-	matrix<int, 2, 2> sss = mmm*nnn;
-	sss.print();
-	matrix<int, 2, 1> mmm1;
-	mmm1.set(0, 0, 11);
-	mmm1.set(1, 0, 31);
-	matrix<int, 2, 2> konk = mmm | mmm1;
+	matrix<int, 2, 1> M1;
+	M1.set(0, 0, 1);
+	M1.set(1, 0, 3);
+	cout << "First matrix: " << endl;
+	M1.print();
+	cout << endl;
+	matrix<int, 1, 2> N;
+	N.set(0, 0, 4);
+	N.set(0, 1, 3);
+	cout << "Second matrix: " << endl;
+	N.print();
+	cout << endl;
+	matrix<int, 2, 2> 
+	Q = M1*N;
+	cout << "Matrix multiplication: " << endl;
+	Q.print();
+	cout << endl;
+	matrix<int, 2, 1> M2;
+	M2.set(0, 0, 11);
+	M2.set(1, 0, 31);
+	matrix<int, 2, 2> 
+	konk = M1 | M2;
+	cout << "Concatenation of matrix: " << endl;
 	konk.print();
-
+	cout << endl;
+	cout << "Access matrix elements via an iterator: " << endl;
 	auto it = konk.begin();
 	for (; it != konk.end(); ++it) {
 		cout << *it << endl;
