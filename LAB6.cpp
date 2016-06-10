@@ -6,7 +6,52 @@
 #include <stdio.h>
 #include <tchar.h>
 using namespace std;
+class compx
+{
+private:
+	int di, mn; // di - целая , mn - мнимая
+public:
+	int get_di() {
+		return di;
+	}
+	int get_mn() {
+		return mn;
+	}
+	compx() {};
+	compx(int d) {
+		di = d;
+		mn = 0;
+	}
+	compx(int d, int m) {
+		di = d;
+		mn = m;
+	}
+	compx(compx &i) { // конструктор copy
+		di = i.di;
+		mn = i.mn;
+	}
+	~compx() {}
 
+	compx & operator=  (compx &i) { // перегрузка присваивания
+		di = i.di;
+		mn = i.mn;
+		return (*this);
+	}
+	compx compx :: operator * (compx &i)// перегрузка произведения 
+	{
+		compx tm;
+		tm.di = di*i.di;
+		tm.mn = di*i.mn;
+		return tm;
+	}
+	compx compx :: operator + (compx &i) // перегрузка сложения
+	{
+		compx tm;
+		tm.di = di + i.di;
+		tm.mn = di + i.mn;
+		return tm;
+	}
+};
 template <class T, int m, int n>
 class matrix {
 private:
