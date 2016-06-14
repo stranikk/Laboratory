@@ -4,72 +4,14 @@
 #include<memory>
 #include <algorithm>
 using namespace std;
-/*
-class compx
-{
-private:
-	int di, mn; // di - целая , mn - мнимая
-public:
-	int get_di() {
-		return di;
-	}
-	int get_mn() {
-		return mn;
-	}
-	compx() {};
-	compx(int d) {
-		di = d;
-		mn = 0;
-	}
-	compx(int d, int m) {
-		di = d;
-		mn = m;
-	}
-	compx(compx &i) { // конструктор copy
-		di = i.di;
-		mn = i.mn;
-	}
-	~compx() {}
 
-	compx & operator=  (compx &i) { // перегрузка присваивания
-		di = i.di;
-		mn = i.mn;
-		return (*this);
-	}
-	compx & operator=  (const compx &i) { // перегрузка присваивания
-		di = i.di;
-		mn = i.mn;
-		return (*this);
-	}
-	compx operator * (compx &i)// перегрузка произведения 
-	{
-		compx tm;
-		tm.di = di*i.di;
-		tm.mn = di*i.mn;
-		return tm;
-	}
-	compx operator + (compx &i) // перегрузка сложения
-	{
-		compx tm;
-		tm.di = di + i.di;
-		tm.mn = di + i.mn;
-		return tm;
-	}
-	compx operator + (const compx &i) // перегрузка сложения
-	{
-		compx tm;
-		tm.di = di + i.di;
-		tm.mn = di + i.mn;
-		return tm;
-	}
-};
-*/
 template <typename T>
 class matrix {
 	T** A;
 	int M;
 	int N;
 public:
+	matrix <T>();
 	matrix<T>(int m, int n) : A(NULL), M(m), N(n)
 	{
 		A = new T*[M]; //строки в массиве
@@ -112,41 +54,42 @@ public:
 	class iterator
 	{
 	private:
-		matrix* pmat;
-		int position_M;
-		int position_N;
+		matrix* pA;
+		int posM;
+		int posN;
+		
 	public:
-			iterator& operator++() {
-				if (position_N == N - 1) {
-					position_M++;
-					position_N = 0;
-					
-				}
-				else
-					{
-						position_N++;
-					}
-				return *this;
-				
+		iterator& operator++() {
+			if (posN == pA->n() - 1) {
+				posM++;
+				posN = 0;
+
 			}
-			bool operator!=(const iterator& prev_it) {
-				return !(position_M == prev_it.position_M && position_N == prev_it.position_N);
-				
+			else
+			{
+				posN++;
 			}
-			iterator(matrix* pmat, int position_M, int position_N) {
-				this->pmat = pmat;
-				this->position_M = position_M;
-				this->position_N = position_N;
-				
-			}
-			T operator*() {
-				return pmat->get(position_M, position_N);
-				
-			}
-			T* operator->() {
-				return *pmat->get(position_M, position_N);
-				
-			}
+			return *this;
+
+		}
+		bool operator!=(const iterator& p_iter) {
+			return !(posM == p_iter.posM && posN == p_iter.posN);
+
+		}
+		iterator(matrix* pA, int posM, int posN) {
+			this->pA = pA;
+			this->posM = posM;
+			this->posN = posN;
+
+		}
+		T operator*() {
+			return pA->get(posM, posN);
+
+		}
+		T* operator->() {
+			return *pA->get(posM, posN);
+
+		}
 	};
 	iterator begin() {
 		iterator temp(this, 0, 0);
@@ -207,34 +150,34 @@ class Bar;
 class Foo
 {
 public:
-	Foo() 
+	Foo()
 	{
-		cout << "Foo()" << endl; 
+		cout << "Foo()" << endl;
 	}
-	~Foo() 
+	~Foo()
 	{
-		cout << "~Foo()" << endl; 
+		cout << "~Foo()" << endl;
 	}
 	shared_ptr<Foo> foo;
-	
+
 };
 
 class Bar
 {
 public:
-	Bar() 
+	Bar()
 	{
 		cout << "Bar()" << endl;
 	}
-	~Bar() 
+	~Bar()
 	{
-		cout << "~Bar()" << endl; 
+		cout << "~Bar()" << endl;
 	}
 	shared_ptr<Bar> bar;
 };
 int main()
 {
-	matrix <int> A(3, 2);  
+	matrix <int> A(3, 2);
 	A(0, 0) = 7;
 	A(0, 1) = 5;
 	A(1, 0) = 3;
@@ -284,8 +227,8 @@ int main()
 		cout << "iskl for * " << z << endl;
 	}
 	cout << endl;
-	auto it = A.begin();
-	cout << "iteration C: " << endl;
+	auto it = A.begin(); // доступ к полям матрицы А
+	cout << "iteration A: " << endl;
 	for (; it != A.end(); ++it) {
 		cout << *it << endl;
 	}
