@@ -92,12 +92,12 @@ public:
 		}
 	};
 	iterator begin() {
-		iterator temp(this, 0, 0);
-		return temp;
+		iterator iter(this, 0, 0);
+		return iter;
 	}
 	iterator end() {
-		iterator temp(this, M, 0);
-		return temp;
+		iterator iter(this, M, 0);
+		return iter;
 	}
 };
 
